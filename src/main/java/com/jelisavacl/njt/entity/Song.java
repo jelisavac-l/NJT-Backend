@@ -21,7 +21,7 @@ public class Song {
     private String title;
 
     @Column(name = "beat_mark", nullable = false, length = 10)
-    private String beatMark; // e.g., "4/4", "3/4", "6/8"
+    private String beatMark; // e.g., 4/4, 7/8, 11/8 (hehehe)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id", nullable = false)
@@ -38,6 +38,9 @@ public class Song {
     @Lob
     @Column(nullable = false)
     private String lyrics; // Full song text with chords inline
+
+    @Column(name = "youtube_link")
+    private String youtubeLink;
 
     @ManyToMany
     @JoinTable(
