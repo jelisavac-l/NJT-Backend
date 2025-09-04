@@ -25,4 +25,8 @@ public class ArtistService {
         return artistRepository.findAll();
     }
 
+    public List<Artist> getAllByNameContaining(String name) {
+        return artistRepository.findByNameContainingIgnoreCase(name);
+    }
+
 }
