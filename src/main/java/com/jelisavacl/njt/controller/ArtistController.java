@@ -1,7 +1,7 @@
 package com.jelisavacl.njt.controller;
 
 import com.jelisavacl.njt.entity.Artist;
-import com.jelisavacl.njt.entity.Chord;
+import com.jelisavacl.njt.entity.Song;
 import com.jelisavacl.njt.service.ArtistService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,22 +17,34 @@ public class ArtistController {
 
     private final ArtistService artistService;
 
-    @PostMapping
-    public ResponseEntity<Artist> createArtist(@RequestBody Artist artist) {
-        return new ResponseEntity<>(artistService.createArtist(artist), HttpStatus.CREATED);
-    }
-
     @GetMapping
     public ResponseEntity<List<Artist>> getAllArtists() {
-        return new ResponseEntity<>(artistService.getAllArtists(), HttpStatus.OK);
+        return ResponseEntity.ok(artistService.getAllArtists());
     }
 
-    @GetMapping
-    public ResponseEntity<List<Artist>> getAllByNameContaining(
-        @RequestParam(required = false, defaultValue = "") String name) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Artist> getArtistById(@PathVariable Long id) {
+        return ResponseEntity.ok(artistService.getArtistById(id));
+    }
 
-        List<Artist> artists = artistService.getAllByNameContaining(name);
-        return ResponseEntity.ok(artists);
+    @PostMapping
+    public ResponseEntity<Artist> createArtist(@RequestBody Artist artist) {
+        return ResponseEntity.ok(artistService.createArtist(artist));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Artist> updateArtist(@PathVariable Long id, @RequestBody Artist artist) {
+        return ResponseEntity.ok(artistService.updateArtist(id, artist));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Artist>> searchArtists(@RequestParam String name) {
+        return ResponseEntity.ok(artistService.searchArtistsByName(name));
+    }
+
+    @GetMapping("/{id}/songs")
+    public ResponseEntity<List<Song>> getSongsByArtist(@PathVariable Long id) {
+        return ResponseEntity.ok(artistService.getSongsByArtist(id));
     }
 
 
