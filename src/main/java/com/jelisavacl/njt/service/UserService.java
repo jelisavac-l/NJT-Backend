@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Service
@@ -38,5 +39,10 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
     }
 }

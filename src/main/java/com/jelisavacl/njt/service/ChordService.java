@@ -17,4 +17,8 @@ public class ChordService {
         return chordRepository.findAll();
     }
 
+    public List<Chord> getAllByNameContaining(String name) {
+        return chordRepository.findByNameContainingIgnoreCase(name);
+    }
+
 }

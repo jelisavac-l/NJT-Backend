@@ -17,4 +17,14 @@ public class GenreService {
         return genreRepository.findAll();
     }
 
+    public Genre getGenreById(Long id) {
+        return genreRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Genre not found with id: " + id));
+    }
+
+    public Genre getGenreByName(String name) {
+        return genreRepository.findByName(name)
+            .orElseThrow(() -> new RuntimeException("Genre not found with name: " + name));
+    }
+
 }

@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Service
@@ -31,6 +32,12 @@ public class SongService {
 
     public List<Song> getAllSongs() {
         return songRepository.findAll();
+    }
+
+    public Song getSongById(Long id) {
+        return songRepository.findById(id).orElseThrow(
+            () -> new NoSuchElementException("Invalid id")
+        );
     }
 
     public List<Song> getSongsByArtist(String name) {
