@@ -1,5 +1,6 @@
 package com.jelisavacl.njt.controller;
 
+import com.jelisavacl.njt.dto.SongDTO;
 import com.jelisavacl.njt.entity.Song;
 import com.jelisavacl.njt.entity.User;
 import com.jelisavacl.njt.service.SongService;
@@ -25,8 +26,18 @@ public class SongController {
         return authentication.getName();
     }
 
+    @GetMapping("/latest")
+    public ResponseEntity<List<SongDTO>> getLatestSongs() {
+        return ResponseEntity.ok(songService.getLatestSongs());
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<SongDTO>> getPopularSongs() {
+        return ResponseEntity.ok(songService.getMostPopular());
+    }
+
     @GetMapping
-    public ResponseEntity<List<Song>> getAllSongs() {
+    public ResponseEntity<List<SongDTO>> getAllSongs() {
         return ResponseEntity.ok(songService.getAllSongs());
     }
 

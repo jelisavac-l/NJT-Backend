@@ -23,6 +23,9 @@ public class Song {
     @Column(name = "beat_mark", nullable = false, length = 10)
     private String beatMark; // e.g., 4/4, 7/8, 11/8 (hehehe)
 
+    @Column()
+    private Integer viewCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "artist_id", nullable = false)
     private Artist artist;
@@ -50,11 +53,11 @@ public class Song {
     )
     private Set<Tag> tags;
 
-    @ManyToMany
-    @JoinTable(
-        name = "song_chords",
-        joinColumns = @JoinColumn(name = "song_id"),
-        inverseJoinColumns = @JoinColumn(name = "chord_id")
-    )
-    private Set<Chord> chords;
+//    @ManyToMany
+//    @JoinTable(
+//        name = "song_chords",
+//        joinColumns = @JoinColumn(name = "song_id"),
+//        inverseJoinColumns = @JoinColumn(name = "chord_id")
+//    )
+//    private Set<Chord> chords;
 }
