@@ -29,7 +29,7 @@ public class SongDTO {
 
     private Set<String> tags;
 
-    public SongDTO toDTO(Song song) {
+    public static SongDTO toDTO(Song song) {
         return SongDTO.builder()
             .id(song.getId())
             .title(song.getTitle())

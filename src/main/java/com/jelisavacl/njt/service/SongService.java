@@ -2,8 +2,12 @@ package com.jelisavacl.njt.service;
 
 import com.jelisavacl.njt.dto.SongDTO;
 import com.jelisavacl.njt.entity.Song;
+import com.jelisavacl.njt.entity.User;
 import com.jelisavacl.njt.repository.SongRepository;
+import com.jelisavacl.njt.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +19,7 @@ import java.util.NoSuchElementException;
 public class SongService {
 
     private final SongRepository songRepository;
+    private final UserRepository userRepository;
 
     public Song createSong(Song song) {
         return songRepository.save(song);
@@ -77,4 +82,14 @@ public class SongService {
         return songRepository.findByTagsNameIn(tags);
     }
 
+    @Transactional
+    public List<SongDTO> getSongsByUser(String username) {
+        User u = userRepository.findByUsername(username).orElseThrow(NoSuchElementException::new);
+        List<Song> songs = songRepository.findByCreatedBy(u);
+        List<SongDTO> dtos = new ArrayList<>();
+        songs.forEach(song -> {
+            dtos.add(SongDTO.toDTO(song));
+        });
+        return dtos;
+    }
 }

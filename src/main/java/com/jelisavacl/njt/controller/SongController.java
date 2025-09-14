@@ -81,4 +81,9 @@ public class SongController {
         songService.deleteSong(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<SongDTO>> getSongsByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(songService.getSongsByUser(username));
+    }
 }

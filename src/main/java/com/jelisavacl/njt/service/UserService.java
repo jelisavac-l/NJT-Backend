@@ -1,7 +1,9 @@
 package com.jelisavacl.njt.service;
 
+import com.jelisavacl.njt.dto.UserDTO;
 import com.jelisavacl.njt.entity.User;
 import com.jelisavacl.njt.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +21,14 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User updatedUser) {
-        return userRepository.findById(id).map(user -> {
+    public UserDTO updateUser(Long id, User updatedUser) {
+        User u = userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
             user.setPassword(updatedUser.getPassword());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        return UserDTO.toDTO(u);
     }
 
     public void deleteUser(Long id) {
@@ -39,6 +42,12 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public UserDTO getUserDTOByUsername(String username) {
+        User u = userRepository.findByUsername(username)
+            .orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
+        return UserDTO.toDTO(u);
     }
 
     public User getUserByUsername(String username) {
