@@ -42,17 +42,19 @@ public class SongController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Song> getSongById(@PathVariable Long id) {
-        return ResponseEntity.ok(songService.getSongById(id));
+    public ResponseEntity<SongDTO> getSongById(@PathVariable Long id) {
+        Song s = songService.getSongById(id);
+        return ResponseEntity.ok(new SongDTO().toDTO(s));
     }
 
     @PostMapping
-    public ResponseEntity<Song> createSong(@RequestBody Song song) {
+    public ResponseEntity<SongDTO> createSong(@RequestBody Song song) {
         String username = getCurrentUsername();
         User creator = userService.getUserByUsername(username);
 
         song.setCreatedBy(creator); // Force logged user as creator
-        return ResponseEntity.ok(songService.createSong(song));
+        Song s = songService.createSong(song);
+        return ResponseEntity.ok(new SongDTO().toDTO(s));
     }
 
     @PutMapping("/{id}")

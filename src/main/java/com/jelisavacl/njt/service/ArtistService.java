@@ -1,12 +1,15 @@
 package com.jelisavacl.njt.service;
 
+import com.jelisavacl.njt.dto.SongDTO;
 import com.jelisavacl.njt.entity.Artist;
 import com.jelisavacl.njt.entity.Song;
 import com.jelisavacl.njt.repository.ArtistRepository;
 import com.jelisavacl.njt.repository.SongRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -40,8 +43,14 @@ public class ArtistService {
             () -> new NoSuchElementException("Invalid id"));
     }
 
-    public List<Song> getSongsByArtist(Long artistId) {
+    @Transactional
+    public List<SongDTO> getSongsByArtist(Long artistId) {
         getArtistById(artistId); // ensures artist exists
-        return songRepository.findByArtistId(artistId);
+        List<Song> songs = songRepository.findByArtistId(artistId);
+        List<SongDTO> dtos = new ArrayList<>();
+        songs.forEach(song -> {
+            dtos.add(new SongDTO().toDTO(song));
+        });
+        return dtos;
     }
 }

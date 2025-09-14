@@ -22,6 +22,7 @@ public class SongDTO {
     private Integer viewCount;
 
     // Flattened references
+    private Long artistId;
     private String artistName;
     private String genreName;
     private String createdByUsername;
@@ -36,9 +37,10 @@ public class SongDTO {
             .lyrics(song.getLyrics())
             .youtubeLink(song.getYoutubeLink())
             .artistName(song.getArtist().getName())
+            .artistId(song.getArtist().getId())
             .genreName(song.getGenre().getName())
             .createdByUsername(song.getCreatedBy().getUsername())
-            .tags(song.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
+            .tags(song.getTags() == null ? null : song.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
             .viewCount(song.getViewCount())
             .build();
     }

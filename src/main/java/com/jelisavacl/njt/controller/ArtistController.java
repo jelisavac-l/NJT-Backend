@@ -1,5 +1,6 @@
 package com.jelisavacl.njt.controller;
 
+import com.jelisavacl.njt.dto.SongDTO;
 import com.jelisavacl.njt.entity.Artist;
 import com.jelisavacl.njt.entity.Song;
 import com.jelisavacl.njt.service.ArtistService;
@@ -43,7 +44,7 @@ public class ArtistController {
     }
 
     @GetMapping("/{id}/songs")
-    public ResponseEntity<List<Song>> getSongsByArtist(@PathVariable Long id) {
+    public ResponseEntity<List<SongDTO>> getSongsByArtist(@PathVariable Long id) {
         return ResponseEntity.ok(artistService.getSongsByArtist(id));
     }
 
