@@ -44,7 +44,9 @@ public class SongController {
     @GetMapping("/{id}")
     public ResponseEntity<SongDTO> getSongById(@PathVariable Long id) {
         Song s = songService.getSongById(id);
-        return ResponseEntity.ok(new SongDTO().toDTO(s));
+        s.setViewCount(s.getViewCount() + 1);
+        songService.updateSong(s.getId(), s);
+        return ResponseEntity.ok(SongDTO.toDTO(s));
     }
 
     @PostMapping
@@ -61,12 +63,11 @@ public class SongController {
     public ResponseEntity<?> updateSong(@PathVariable Long id, @RequestBody Song updatedSong) {
         Song existingSong = songService.getSongById(id);
         String username = getCurrentUsername();
-
         if (!existingSong.getCreatedBy().getUsername().equals(username)) {
             return ResponseEntity.status(403).body("You can only update your own songs.");
         }
-
-        return ResponseEntity.ok(songService.updateSong(id, updatedSong));
+        Song s = songService.updateSong(id, updatedSong);
+        return ResponseEntity.ok(SongDTO.toDTO(s));
     }
 
     @DeleteMapping("/{id}")

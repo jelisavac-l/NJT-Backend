@@ -2,6 +2,8 @@ package com.jelisavacl.njt.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+
 import java.util.Set;
 
 @Entity
@@ -23,7 +25,8 @@ public class Song {
     @Column(name = "beat_mark", nullable = false, length = 10)
     private String beatMark; // e.g., 4/4, 7/8, 11/8 (hehehe)
 
-    @Column()
+    @Column
+    @ColumnDefault("0")
     private Integer viewCount;
 
     @ManyToOne(fetch = FetchType.LAZY)

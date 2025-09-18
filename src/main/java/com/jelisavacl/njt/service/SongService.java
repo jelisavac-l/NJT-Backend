@@ -22,14 +22,20 @@ public class SongService {
     private final UserRepository userRepository;
 
     public Song createSong(Song song) {
+        song.setViewCount(0);
         return songRepository.save(song);
     }
 
     public Song updateSong(Long id, Song updatedSong) {
+        User creator = songRepository.findById(id)
+            .orElseThrow(NoSuchElementException::new)
+            .getCreatedBy();
         Song song = songRepository.findById(id).orElseThrow(
             () -> new RuntimeException("Invalid id")
         );
         updatedSong.setId(id);
+        updatedSong.setCreatedBy(creator);
+        updatedSong.setViewCount(song.getViewCount());
         return songRepository.save(updatedSong);
     }
 
@@ -41,16 +47,17 @@ public class SongService {
         List<Song> songs =  songRepository.findAll();
         List<SongDTO> dtos = new ArrayList<>();
         songs.forEach(song -> {
-            dtos.add(new SongDTO().toDTO(song));
+            dtos.add(SongDTO.toDTO(song));
         });
         return dtos;
     }
 
+    @Transactional
     public List<SongDTO> getLatestSongs() {
         List<Song> songs = songRepository.findTop10ByOrderByIdDesc();
         List<SongDTO> dtos = new ArrayList<>();
         songs.forEach(song -> {
-            dtos.add(new SongDTO().toDTO(song));
+            dtos.add(SongDTO.toDTO(song));
         });
         return dtos;
     }
@@ -61,25 +68,41 @@ public class SongService {
         );
     }
 
+    @Transactional
     public List<SongDTO> getMostPopular() {
         List<Song> songs = songRepository.findTop10ByOrderByViewCountDesc();
         List<SongDTO> dtos = new ArrayList<>();
         songs.forEach(song -> {
-            dtos.add(new SongDTO().toDTO(song));
+            dtos.add(SongDTO.toDTO(song));
         });
         return dtos;
     }
 
-    public List<Song> getSongsByArtist(String name) {
-        return songRepository.findByArtistName(name);
+    public List<SongDTO> getSongsByArtist(String name) {
+        List<Song> songs = songRepository.findByArtistName(name);
+        List<SongDTO> dtos = new ArrayList<>();
+        songs.forEach(song -> {
+            dtos.add(SongDTO.toDTO(song));
+        });
+        return dtos;
     }
 
-    public List<Song> getSongsByGenre(String genre) {
-        return songRepository.findByGenreName(genre);
+    public List<SongDTO> getSongsByGenre(String genre) {
+        List<Song> songs = songRepository.findByGenreName(genre);
+        List<SongDTO> dtos = new ArrayList<>();
+        songs.forEach(song -> {
+            dtos.add(SongDTO.toDTO(song));
+        });
+        return dtos;
     }
 
-    public List<Song> getSongsByTag(List<String> tags) {
-        return songRepository.findByTagsNameIn(tags);
+    public List<SongDTO> getSongsByTag(List<String> tags) {
+        List<Song> songs = songRepository.findByTagsNameIn(tags);
+        List<SongDTO> dtos = new ArrayList<>();
+        songs.forEach(song -> {
+            dtos.add(SongDTO.toDTO(song));
+        });
+        return dtos;
     }
 
     @Transactional
