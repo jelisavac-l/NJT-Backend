@@ -20,6 +20,8 @@ public interface SongRepository extends JpaRepository<Song, Long> {
     List<Song> findByTagsNameIn(List<String> tagNames);
     List<Song> findTop10ByOrderByIdDesc();
     List<Song> findTop10ByOrderByViewCountDesc();
+    @Query("SELECT s FROM User u JOIN u.favorites s WHERE u = :user")
+    List<Song> findFavoritesByUser(User user);
 
     @Query("""
         SELECT s FROM Song s

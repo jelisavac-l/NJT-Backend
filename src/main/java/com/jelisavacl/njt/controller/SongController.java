@@ -62,7 +62,7 @@ public class SongController {
 
         song.setCreatedBy(creator); // Force logged user as creator
         Song s = songService.createSong(song);
-        return ResponseEntity.ok(new SongDTO().toDTO(s));
+        return ResponseEntity.ok(SongDTO.toDTO(s));
     }
 
     @PutMapping("/{id}")
@@ -92,5 +92,21 @@ public class SongController {
     @GetMapping("/user/{username}")
     public ResponseEntity<List<SongDTO>> getSongsByUsername(@PathVariable String username) {
         return ResponseEntity.ok(songService.getSongsByUser(username));
+    }
+
+    @PostMapping("/favorites/{songId}")
+    public void addFavorite(@PathVariable Long songId) {
+
+        songService.addFavorite(getCurrentUsername(), songId);
+    }
+
+    @DeleteMapping("/favorites/{songId}")
+    public void removeFavorite(@PathVariable Long songId) {
+        songService.removeFavorite(getCurrentUsername(), songId);
+    }
+
+    @GetMapping("/favorites")
+    public List<SongDTO> getFavorites() {
+        return songService.getFavorites(getCurrentUsername());
     }
 }

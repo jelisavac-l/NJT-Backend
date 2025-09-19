@@ -9,9 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -126,5 +124,33 @@ public class SongService {
             dtos.add(SongDTO.toDTO(song));
         });
         return dtos;
+    }
+
+    public void addFavorite(String username, Long songId) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        Song song = songRepository.findById(songId).orElseThrow();
+
+        if (!user.getFavorites().contains(song)) {
+            user.getFavorites().add(song);
+            userRepository.save(user);
+        }
+    }
+
+    public void removeFavorite(String username, Long songId) {
+        User user = userRepository.findByUsername(username).orElseThrow();
+        Song song = songRepository.findById(songId).orElseThrow();
+
+        if (user.getFavorites().contains(song)) {
+            user.getFavorites().remove(song);
+            userRepository.save(user);
+        }
+    }
+
+    @Transactional
+    public List<SongDTO> getFavorites(String username) {
+        User u = userRepository.findByUsername(username).orElseThrow(NoSuchElementException::new);
+        return songRepository.findFavoritesByUser(u).stream()
+            .map(SongDTO::toDTO)
+            .toList();
     }
 }
