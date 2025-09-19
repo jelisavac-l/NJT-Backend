@@ -7,7 +7,6 @@ import com.jelisavacl.njt.repository.SongRepository;
 import com.jelisavacl.njt.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -78,6 +77,7 @@ public class SongService {
         return dtos;
     }
 
+    @Transactional
     public List<SongDTO> getSongsByArtist(String name) {
         List<Song> songs = songRepository.findByArtistName(name);
         List<SongDTO> dtos = new ArrayList<>();
@@ -87,6 +87,7 @@ public class SongService {
         return dtos;
     }
 
+    @Transactional
     public List<SongDTO> getSongsByGenre(String genre) {
         List<Song> songs = songRepository.findByGenreName(genre);
         List<SongDTO> dtos = new ArrayList<>();
@@ -96,8 +97,19 @@ public class SongService {
         return dtos;
     }
 
+    @Transactional
     public List<SongDTO> getSongsByTag(List<String> tags) {
         List<Song> songs = songRepository.findByTagsNameIn(tags);
+        List<SongDTO> dtos = new ArrayList<>();
+        songs.forEach(song -> {
+            dtos.add(SongDTO.toDTO(song));
+        });
+        return dtos;
+    }
+
+    @Transactional
+    public List<SongDTO> search(String keyword) {
+        List<Song> songs = songRepository.searchSongs(keyword);
         List<SongDTO> dtos = new ArrayList<>();
         songs.forEach(song -> {
             dtos.add(SongDTO.toDTO(song));

@@ -36,10 +36,16 @@ public class SongController {
         return ResponseEntity.ok(songService.getMostPopular());
     }
 
-    @GetMapping
-    public ResponseEntity<List<SongDTO>> getAllSongs() {
-        return ResponseEntity.ok(songService.getAllSongs());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<SongDTO>> getAllSongs() {
+//        return ResponseEntity.ok(songService.getAllSongs());
+//    }
+        @GetMapping
+        public List<SongDTO> getSongs(@RequestParam(required = false) String search) {
+            if (search != null && !search.isBlank()) {
+                return songService.search(search);
+            } else return songService.getAllSongs();
+        }
 
     @GetMapping("/{id}")
     public ResponseEntity<SongDTO> getSongById(@PathVariable Long id) {
