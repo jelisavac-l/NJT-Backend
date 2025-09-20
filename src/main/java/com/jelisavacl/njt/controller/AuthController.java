@@ -6,6 +6,10 @@ import com.jelisavacl.njt.security.CustomUserDetails;
 import com.jelisavacl.njt.security.CustomUserDetailsService;
 import com.jelisavacl.njt.security.JwtUtil;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,10 +29,10 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody User user) {
         // Check if username or email already exists
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            return "Username already exists";
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Korisnik vec postoji.");
         }
 
         // Encode password
@@ -37,7 +41,7 @@ public class AuthController {
         // Save user
         userRepository.save(user);
 
-        return "User registered successfully!";
+        return ResponseEntity.ok("Registracija uspela!");
     }
 
     @PostMapping("/login")
@@ -50,18 +54,15 @@ public class AuthController {
                 (CustomUserDetails) userDetailsService.loadUserByUsername(request.getUsername());
             return jwtUtil.generateToken(userDetails);
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Invalid username or password");
+            throw new RuntimeException("Neispravan unos");
         }
     }
 
-    // DTO
+    @Setter
+    @Getter
     public static class AuthRequest {
         private String username;
         private String password;
 
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
     }
 }
