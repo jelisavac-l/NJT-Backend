@@ -1,0 +1,128 @@
+@startuml
+' ----------------------------
+' Pesmarica++ — Backend Component + Domain Relationships
+' ----------------------------
+skinparam linetype ortho
+skinparam componentStyle rectangle
+skinparam roundcorner 8
+skinparam dpi 700
+skinparam shadowing true
+
+title Pesmarica++ Backend Architecture Diagram
+
+' ===== Backend package =====
+package "Backend" #cffec7ff {
+
+    package "Security" #FFAFA1 {
+        component "JWTFilter" as JWTFilter
+        component "JWTUtil" as JWTUtil
+        component "CustomUserDetails" as CUD
+        component "CUDService" as CUDService
+    }
+
+    package "Config" #f3daa7ff {
+        component SecurityConfig
+    }
+
+    package "REST Controllers" as ctl #E6F7FF {
+    component "SongController"   as SongControllerComp
+    component "UserController"   as UserControllerComp
+    component "ArtistController" as ArtistControllerComp
+    component "GenreController"  as GenreControllerComp
+    component "AuthController"   as AuthControllerComp
+    component "UtilController"   as UtilControllerComp
+  }
+
+    package "Services" as svc #FFF5E6 {
+    component "SongService"     as SongServiceComp
+    component "UserService"     as UserServiceComp
+    component "ArtistService"   as ArtistServiceComp
+    component "GenreService"    as GenreServiceComp
+    component "FavoriteService" as FavoriteServiceComp
+    }
+
+  package "Repositories" as repo #F0FFF0 {
+    component "SongRepository"      as SongRepoComp
+    component "UserRepository"      as UserRepoComp
+    component "ArtistRepository"    as ArtistRepoComp
+    component "GenreRepository"     as GenreRepoComp
+    component "TagRepository"       as TagRepoComp
+    component "FavoritesRepository" as FavoritesRepoComp
+  }
+
+    package "Domain (Entities)" as domain #F7F7FF {
+    ' domain classes (use aliases to avoid collisions)
+
+    component "Favorites" as FavoritesEntity
+    component "Genre"     as GenreEntity
+    component "Artist"    as ArtistEntity
+    component "User"      as UserEntity
+    component "Song"      as SongEntity
+    component "Tag"       as TagEntity
+    component "SongTags"  as SongTagsEntity
+    
+  }
+
+    package "DTO (Transfer objekti)" #EFEFEF {
+    component "SongDTO" as SongDTOComp
+    component "UserDTO" as UserDTOComp
+    }
+
+  
+}
+
+database PostgreSQL
+
+' ===== Component layer dependencies (UML component style) =====
+SongControllerComp ..> SongServiceComp     : poziva
+UserControllerComp ..> UserServiceComp     : poziva
+ArtistControllerComp ..> ArtistServiceComp : poziva
+GenreControllerComp ..> GenreServiceComp   : poziva
+AuthControllerComp ..> UserServiceComp     : autorizuje
+
+SongServiceComp ..> SongRepoComp           : koristi
+UserServiceComp ..> UserRepoComp           : koristi
+ArtistServiceComp ..> ArtistRepoComp       : koristi
+GenreServiceComp ..> GenreRepoComp         : koristi
+FavoriteServiceComp ..> FavoritesRepoComp  : koristi
+repo ..> PostgreSQL
+
+JWTFilter ..> JWTUtil : koristi
+JWTFilter ..> CUDService : koristi
+CUDService ..> CUD : koristi
+SecurityConfig ..> JWTFilter : podesava
+CUD ..> UserEntity : mapira
+
+' Services manipulating domain entities
+SongServiceComp ..> SongEntity : generise
+UserServiceComp ..> UserEntity : generise
+
+' DTO mapping arrows
+SongEntity ..> SongDTOComp : mapira
+UserEntity ..> UserDTOComp : mapira
+
+' ===== Domain class relationships (UML class associations) =====
+' Song has Artist, Genre and is createdBy a User
+SongEntity --> ArtistEntity : artist
+SongEntity --> GenreEntity  : genre
+SongEntity --> UserEntity   : kreirao
+
+' Song - SongTags - Tag (many-to-many via join entity SongTags)
+SongEntity "1" *-- "*" SongTagsEntity : ima
+SongTagsEntity --> TagEntity : tag
+
+' Favorites join table: user <> favorites <> song
+UserEntity "1" o-- "*" FavoritesEntity : ima
+SongEntity "1" o-- "*" FavoritesEntity : ukljucuje
+
+ctl -[hidden]-> svc
+ctl -[hidden]-> domain
+FavoritesEntity -[hidden]-> SongEntity
+
+
+note bottom of SongRepoComp
+  Repozitorijumi su Spring Data JPA interfejsi
+  (extend JpaRepository<T, ID>).
+end note
+
+@enduml
