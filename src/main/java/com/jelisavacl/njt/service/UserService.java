@@ -3,7 +3,6 @@ package com.jelisavacl.njt.service;
 import com.jelisavacl.njt.dto.UserDTO;
 import com.jelisavacl.njt.entity.User;
 import com.jelisavacl.njt.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

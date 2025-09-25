@@ -9,7 +9,9 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @Service
@@ -41,7 +43,7 @@ public class SongService {
     }
 
     public List<SongDTO> getAllSongs() {
-        List<Song> songs =  songRepository.findAll();
+        List<Song> songs = songRepository.findAll();
         List<SongDTO> dtos = new ArrayList<>();
         songs.forEach(song -> {
             dtos.add(SongDTO.toDTO(song));

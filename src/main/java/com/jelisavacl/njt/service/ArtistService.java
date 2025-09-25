@@ -49,7 +49,8 @@ public class ArtistService {
         List<Song> songs = songRepository.findByArtistId(artistId);
         List<SongDTO> dtos = new ArrayList<>();
         songs.forEach(song -> {
-            dtos.add(new SongDTO().toDTO(song));
+            new SongDTO();
+            dtos.add(SongDTO.toDTO(song));
         });
         return dtos;
     }

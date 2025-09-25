@@ -48,7 +48,7 @@ public class UserController {
         User existingUser = userService.getUserById(id);
 
         if (!existingUser.getUsername().equals(currentUsername)) {
-            return ResponseEntity.status(403).body("You can only update your own profile.");
+            return ResponseEntity.status(403).body("Korisnik nije autorizovan za operaciju.");
         }
 
         return ResponseEntity.ok(userService.updateUser(id, updatedUser));
@@ -60,7 +60,7 @@ public class UserController {
         User existingUser = userService.getUserById(id);
 
         if (!existingUser.getUsername().equals(currentUsername)) {
-            return ResponseEntity.status(403).body("You can only delete your own profile.");
+            return ResponseEntity.status(403).body("Korisnik nije autorizovan za ovu operaciju.");
         }
 
         userService.deleteUser(id);

@@ -2,10 +2,8 @@ package com.jelisavacl.njt.controller;
 
 import com.jelisavacl.njt.dto.SongDTO;
 import com.jelisavacl.njt.entity.Artist;
-import com.jelisavacl.njt.entity.Song;
 import com.jelisavacl.njt.service.ArtistService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +45,5 @@ public class ArtistController {
     public ResponseEntity<List<SongDTO>> getSongsByArtist(@PathVariable Long id) {
         return ResponseEntity.ok(artistService.getSongsByArtist(id));
     }
-
-
 
 }
