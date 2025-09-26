@@ -25,7 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {   // TODO: Rasporediti samo sta gde je treba da ide!
+public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;

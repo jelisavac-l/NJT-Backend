@@ -16,6 +16,6 @@ public class EndpointLogger implements CommandLineRunner {
     @Override
     public void run(String... args) {
         handlerMapping.getHandlerMethods()
-            .forEach((mapping, method) -> System.out.println(mapping + " -> " + method));
+            .forEach((mapping, method) -> System.out.println(mapping));
     }
 }
