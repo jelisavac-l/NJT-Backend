@@ -5,6 +5,7 @@ import com.jelisavacl.njt.repository.UserRepository;
 import com.jelisavacl.njt.security.CustomUserDetails;
 import com.jelisavacl.njt.security.CustomUserDetailsService;
 import com.jelisavacl.njt.security.JwtUtil;
+import com.jelisavacl.njt.service.AuthService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,64 +33,39 @@ public class AuthController {   // TODO: Rasporediti samo sta gde je treba da id
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private JavaMailSender mailSender;
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
-        // Check if username or email already exist
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+        if (!authService.register(user)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Korisnik vec postoji.");
         }
-
-        // Encode password
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        String token = UUID.randomUUID().toString();
-        user.setConfirmationToken(token);
-        sendConfirmationEmail(user.getEmail(), token);
-
-        // Save user
-        userRepository.save(user);
-
-        return ResponseEntity.ok("Registracija uspela!");
+        else return ResponseEntity.ok("Registracija uspela!");
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody AuthRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-            );
-            CustomUserDetails userDetails =
-                (CustomUserDetails) userDetailsService.loadUserByUsername(request.getUsername());
-            String token = jwtUtil.generateToken(userDetails);
+        String token = authService.login(request);
+        if(token != null) {
             return ResponseEntity.ok(token);
-        } catch (AuthenticationException e) {
-            return ResponseEntity.notFound().build();
-        }
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nije dobro nesto.");
+
     }
 
     @GetMapping("/confirm")
     public ResponseEntity<String> confirmAccount(@RequestParam("token") String token) {
-        User user = userRepository.findByConfirmationToken(token)
-            .orElseThrow(() -> new RuntimeException("Token nije ispravan."));
 
-        user.setEnabled(true);
-        user.setConfirmationToken(null);
-        userRepository.save(user);
+        try {
+            authService.confirm(token);
+            return ResponseEntity.ok(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Nije dobro nesto.");
+        }
 
-        return ResponseEntity.ok("Nalog aktiviran.");
+
     }
 
-    private void sendConfirmationEmail(String to, String token) {
-        String link = "http://localhost:8080/api/auth/confirm?token=" + token;
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Potvrda registracije");
-        message.setText("Kliknite na link: " + link);
-
-        mailSender.send(message);
-    }
 
     @Setter
     @Getter
