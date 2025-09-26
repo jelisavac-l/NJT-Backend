@@ -32,7 +32,7 @@ Za skladištenje podataka odabran je **PostgreSQL** sistem za URBP.
 
 <img src='acr.png'>
 
-## Asd
+## Pregled arhitekture serverske aplikacije
 <img src='cd.png'>
 
 ## Slučajevi korišćenja
@@ -91,3 +91,57 @@ Glavni tok:
 3. Sistem proverava format i ispravnost podataka.
 4. Nova pesma se dodaje u javnu bazu.
 - **Postuslov**: Nova pesma je dostupna svim korisnicima i zabeležena na profilu korisnika.
+
+## Hijerarhijski prikaz komponenata implementacije
+```
+src/main/
+├── java
+│   └── com
+│       └── jelisavacl
+│           └── njt
+│               ├── config
+│               │   └── SecurityConfig.java
+│               ├── controller
+│               │   ├── ArtistController.java
+│               │   ├── AuthController.java
+│               │   ├── GenreController.java
+│               │   ├── SongController.java
+│               │   ├── TagController.java
+│               │   ├── UserController.java
+│               │   └── UtilController.java
+│               ├── dto
+│               │   ├── SongDTO.java
+│               │   └── UserDTO.java
+│               ├── entity
+│               │   ├── Artist.java
+│               │   ├── Genre.java
+│               │   ├── Song.java
+│               │   ├── Tag.java
+│               │   └── User.java
+│               ├── NjtApplication.java (Entry point aplikacije)
+│               ├── repository
+│               │   ├── ArtistRepository.java
+│               │   ├── GenreRepository.java
+│               │   ├── SongRepository.java
+│               │   ├── TagRepository.java
+│               │   └── UserRepository.java
+│               ├── security
+│               │   ├── CustomUserDetails.java
+│               │   ├── CustomUserDetailsService.java
+│               │   ├── JwtFilter.java
+│               │   └── JwtUtil.java
+│               ├── service
+│               │   ├── ArtistService.java
+│               │   ├── AuthService.java
+│               │   ├── GenreService.java
+│               │   ├── SongService.java
+│               │   ├── TagService.java
+│               │   └── UserService.java
+│               └── util
+│                   └── EndpointLogger.java
+└── resources
+    ├── application.properties
+    ├── application.yml
+    ├── static
+    └── templates
+```
